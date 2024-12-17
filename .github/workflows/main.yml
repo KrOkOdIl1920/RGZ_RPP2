@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask flasgger pyyaml bandit
+
+    - name: Run Bandit
+      run: bandit -r .
+
+    - name: Generate OpenAPI spec
+      run: python generate_openapi.py
+
+    - name: Install Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - name: Install Redocly
+      run: npm i -g @redocly/cli@latest
+
+    - name: Generate ReDoc
+      run: redocly build-docs openapi.yaml
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
