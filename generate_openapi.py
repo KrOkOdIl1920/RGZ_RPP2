@@ -1,3 +1,4 @@
+import os
 import yaml
 from app import app
 
@@ -7,6 +8,7 @@ def generate_openapi_yaml():
         response = client.get('/apispec_1.json')
         if response.status_code == 200 and response.is_json:
             openapi_spec = response.json
+            os.makedirs("docs", exist_ok=True)  # Создаем директорию "docs", если её нет
             with open("docs/openapi.yaml", "w") as file:
                 yaml.dump(openapi_spec, file, default_flow_style=False)
             print("Спецификация OpenAPI сохранена в docs/openapi.yaml")
