@@ -1,0 +1,54 @@
+definitions:
+  Contact:
+    properties:
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+info:
+  description: powered by Flasgger
+  termsOfService: /tos
+  title: A swagger API
+  version: 0.0.1
+paths:
+  /contacts:
+    post:
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Contact'
+      responses:
+        '201':
+          description: Created
+      summary: Create a new contact
+  /contacts/{contact_id}:
+    delete:
+      parameters:
+      - in: path
+        name: contact_id
+        required: true
+        type: integer
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      summary: Delete a contact by ID
+    get:
+      parameters:
+      - in: path
+        name: contact_id
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Contact'
+        '404':
+          description: Not Found
+      summary: Get a contact by ID
+swagger: '2.0'
